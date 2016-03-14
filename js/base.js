@@ -97,8 +97,7 @@
     function now(format){
         return format ? date(format) : (new Date).getTime();
     };
-
-    //返回和php一样的时间格式
+    
     //如Date.date('Y-m-d H:i:s'); 2012-09-10 11:10:00
     //y 4位年
     //m 2位月

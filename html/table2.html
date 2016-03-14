@@ -135,7 +135,6 @@
         </ul>
     </aside>
 <div class="content">
-    <table class="xxx"></table>
 </div>
     <script src="../js/jquery.js"></script>
     <script src="../js/echarts.js"></script>
@@ -151,16 +150,17 @@
 <script type="text/javascript">
 $(function() {
     var opt = {
-        sel: ".xxx",
+        $ct: $(".content"),
         col: [{
             key: "id",
             title: "ID",
-            sort: true
+            sort: true,
+            filter: true
         }, {
             key: "phone",
             title: "电话",
             sort: false,
-            invisible: true
+            filter: true
         }, {
             key: "money",
             title: "金额",
@@ -169,14 +169,15 @@ $(function() {
             key: "role",
             title: "权限",
             sort: true,
+            filter: true,
             render: function(a, b) {
                 a.append(b + "大会上");
             }
         }],
-        page: false,
+        // page: false,
         url: "../js/_table.json"
     };
-    table.init(opt);
+    new Table(opt);
 });
 </script>
     <div id="to_top">

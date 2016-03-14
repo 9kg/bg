@@ -135,7 +135,28 @@
         </ul>
     </aside>
 <div class="content">
-    <table>
+    <form class="table_filter">
+        <div class="page_size">
+            每页显示
+            <select name="" id="">
+                <option value="">10</option>
+                <option value="">20</option>
+                <option value="">50</option>
+            </select>
+            条
+        </div>
+        <div class="ct_2 filter_key">
+            <select name="" id="">
+                <option value="">表头1</option>
+                <option value="">表头2</option>
+                <option value="">表头3</option>
+            </select>
+        </div>
+        <div class="ct_2 filter_val">
+            <input type="text">
+        </div>
+    </form>
+    <table class="table">
         <thead>
             <tr>
                 <th class="sort">表头1</th>
