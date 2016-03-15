@@ -874,6 +874,7 @@ table.table td {
 }
 table.table + .table_foot {
   font-size: 0;
+  padding-bottom: 20px;
 }
 table.table + .table_foot .table_info,
 table.table + .table_foot .table_btns {
@@ -3607,6 +3608,7 @@ body {
   height: 222px;
   border-top: 1px solid #e7e7eb;
   border-left: 1px solid #e7e7eb;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
 }
 .expression_box .triangle {
   position: absolute;
@@ -3661,6 +3663,7 @@ body {
   -o-user-select: none;
   user-select: none;
   display: inline-block;
+  vertical-align: top;
 }
 .expression_box .expression_view .expression_ct .expressions li {
   font-style: normal;
@@ -3782,28 +3785,28 @@ body {
   -webkit-transition: all 0.25s;
   transition: all 0.25s;
 }
+.option_common.active ~ .bg_active,
+.expression_footer .option_common:hover ~ .bg_active {
+  left: 0;
+}
 .option_person.active ~ .bg_active,
 .expression_footer .option_person:hover ~ .bg_active {
-  left: 0;
+  left: 16.6666%;
 }
 .option_nature.active ~ .bg_active,
 .expression_footer .option_nature:hover ~ .bg_active {
-  left: 16.6666%;
+  left: 33.3333%;
 }
 .option_material.active ~ .bg_active,
 .expression_footer .option_material:hover ~ .bg_active {
-  left: 33.3333%;
+  left: 50%;
 }
 .option_place.active ~ .bg_active,
 .expression_footer .option_place:hover ~ .bg_active {
-  left: 50%;
+  left: 66.6666%;
 }
 .option_symbol.active ~ .bg_active,
 .expression_footer .option_symbol:hover ~ .bg_active {
-  left: 66.6666%;
-}
-.option_mahjong.active ~ .bg_active,
-.expression_footer .option_mahjong:hover ~ .bg_active {
   left: 83.3333%;
 }
 .datepicker {

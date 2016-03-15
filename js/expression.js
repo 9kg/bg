@@ -1,5 +1,10 @@
 function Expression(opt){
     this.datas = [{
+        name: "common",
+        desc: "常用",
+        chars: []
+        // chars: ['🀄','🀀','🀁','🀂','🀃','🀅','🀆','🀇','🀈','🀉','🀊','🀋','🀌','🀍','🀎','🀏','🀐','🀑','🀒','🀓','🀔','🀕','🀖','🀗','🀘','🀙','🀚','🀛','🀜','🀝','🀞','🀟','🀠','🀡','🀢','🀣','🀤','🀥','🀦','🀧','🀨','🀩']
+    }, {
         name: "person",
         desc: "人物",
         chars: ['😄','😊','😃','😉','😍','😘','😚','😳','😁','😋','😜','😝','😒','😏','😓','😶','😔','😌','💭','💬','😞','😖','😥','😰','😨','😫','😢','😭','😂','😲','😱','😠','😡','😪','😷','😇','👿','😈','👽','👤','👥','👹','👺','🙈','🙉','🙊','💧','💛','💙','💜','💚','💗','💔','💓','💘','✨','🌟','💢','💤','💨','💦','🔥','💩','🚶','🏃','👫','💃','👯','💏','💑','💀','👣','💋','👄','👀','👅','👬','👭','👪','👞','👟','👡','👠','👢','👕','👔','👗','👖','👘','👙','🎀','🌂','🎩','👑','👒','💼','👜','👓','👛','💄','💌','💍','💎','👍','👎','👌','👊','✊','👋','✋','👐','👆','👇','👈','👉','🙏','👏','💪','🙌','💅','👂','👃','🙅','🙆','💁','💆','💇','🙋','🙎','🙍','🙇','👦','👧','👱','👶','👵','👴','👼','👲','👳','👷','👮','👸','👰','💂','🎅']
@@ -19,11 +24,13 @@ function Expression(opt){
         name: "symbol",
         desc: "符号",
         chars: ['🔢','🔼','🔽','⏩','⏪','🆗','🆖','🔀','🔁','🔂','🆙','🆒','🆓','📶','🈯','🈳','🈴','🈲','🈹','🈺','🈶','🈚','🚾','🚻','🚹','🚺','🚼','🚰','🚭','🈸','🛃','🆘','🆔','🚫','🔞','📵','⛔','✅','❌','❕','❗','❔','❓','🆚','📳','📴','🅰','🅱','🆎','🅾','⛎','🔯','🏧','💱','🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛','➕','➖','➗','💯','©','™','®']
-    }, {
-        name: "mahjong",
-        desc: "麻将",
-        chars: ['🀄','🀀','🀁','🀂','🀃','🀅','🀆','🀇','🀈','🀉','🀊','🀋','🀌','🀍','🀎','🀏','🀐','🀑','🀒','🀓','🀔','🀕','🀖','🀗','🀘','🀙','🀚','🀛','🀜','🀝','🀞','🀟','🀠','🀡','🀢','🀣','🀤','🀥','🀦','🀧','🀨','🀩']
     }];
+    var commonChars = localStorage.getItem('expression');
+    commonChars && (this.datas[0].chars = commonChars.split(','));
+
+    this.commonLimit = 100;
+    this.checkIndx = 0;
+    this.isLock = false;
     this.$link = null;
     this.$ct = null;
     this.$toInput = null;
@@ -46,6 +53,7 @@ Expression.prototype = (function(){
         this.render();
         this.addEvent();
     },render = function(){
+        var that = this;
         var mainView = $('<div class="expression_view">');
         var mainCt = $('<div class="expression_ct">').appendTo(mainView);
         var menuCt = $('<ul class="grid expression_footer">');
@@ -53,18 +61,18 @@ Expression.prototype = (function(){
             var mainItem = $('<ul class="expressions">');
             var menuItem = $('<li class="ex_option option_'+item.name+'">'+item.desc+'</li>');
 
-            i === 0 && mainItem.add(menuItem).addClass("active");
+            i === that.checkIndx && mainItem.add(menuItem).addClass("active");
 
-            var charItems = $('<li>'+item.chars.join('</li><li>')+'</li>').appendTo(mainItem);
+            var charItems = item.chars.length ? $('<li>'+item.chars.join('</li><li>')+'</li>').appendTo(mainItem) : '';
 
             mainCt.append(mainItem);
             menuCt.append(menuItem);
         });
         menuCt.append($('<li class="bg_active">'))
 
-        this.$el.append(mainView);
+        this.$el.html(mainView);
         this.$el.append(menuCt);
-        this.$el.append($('<i class="iconfont icon-697 expressions_fixed" data-title="锁定">'));
+        this.$el.append($('<i class="iconfont icon-697 expressions_fixed'+(this.isLock ? " active" : "")+'">'));
 
         this.$el.append($('<span class="triangle">').css(this.triangleCss));
 
@@ -73,12 +81,28 @@ Expression.prototype = (function(){
     },addEvent = function(){
         var that = this;
         this.$el.on("click", ".ex_option", function() {
+            var indx = $(this).index();
+            that.checkIndx = indx;
+            indx === 0 && that.render();
             $(this).addClass("active").siblings(".active").removeClass("active");
-            $(".expression_ct",that.$el).attr("data-expression", "" + $(this).index());
+            $(".expression_ct",that.$ct).attr("data-expression", "" + indx);
         }).on("click", ".expressions li", function() {
-            base.insertVal(that.$toInput[0],$.trim($(this).text()));
+            var item = $.trim($(this).text());
+            var commonChars = localStorage.getItem('expression');
+            if(!commonChars){
+                commonChars = item;
+            }else{
+                !~commonChars.indexOf(item) && (commonChars = item+','+commonChars);  
+            };
+            var commonCharArr = commonChars.split(",").slice(0,that.commonLimit);
+            that.datas[0].chars = commonCharArr;
+            // alert($('.expression_ct').eq(0).html());
+            localStorage.setItem('expression',commonCharArr.join(","));
+
+            base.insertVal(that.$toInput[0],item);
             that.hideByLocking();
         }).on("click", ".expressions_fixed", function() {
+            that.isLock = !that.isLock;
             $(this).toggleClass("active");
             that.hideByLocking();
         });
