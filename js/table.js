@@ -127,6 +127,7 @@ Table.prototype = (function(){
             that.render();
         }).on("change",'[name="page_size"]',function(){
             that.sendData.page_size = $(this).val();
+            that.sendData.cur_page = 1;
             that.render();
         }).on("keyup",".cur_page",function(){
             var thisVal = $(this).val();
@@ -164,8 +165,8 @@ Table.prototype = (function(){
     },renderInfo = function(){
         var start = (this.sendData.cur_page-1)*this.sendData.page_size+1;
         var end = Math.min(this.sendData.cur_page*this.sendData.page_size,this.total);
-        this.info = this.info.replace("start",start).replace("end",end).replace("num",this.total);
-        return $("<div>").addClass("table_info ct_5-2").text(this.info);
+        var info = this.info.replace("start",start).replace("end",end).replace("num",this.total);
+        return $("<div>").addClass("table_info ct_5-2").text(info);
     },renderButton = function(){
         var div = $("<div>").addClass("table_btns ct_5-3");
         var button = $("<button>").attr("type","button").addClass("btn btn_outline");
